@@ -9,7 +9,7 @@ const server = express();
 server.use(express.json())
 
 // listen for incoming requests
-const port = 9000;
+const port = 7000;
 
 server.listen(port, () => console.log(`\n == API running on port ${port} == \n`));
 
@@ -27,7 +27,7 @@ let users = [
         bio: "Huh, she also has 2 first names."
     },
     {
-        id: shortid.generate(),
+        id: 3,
         name: "Alex Alexander",
         bio: "Why do these characters have 2 first names..."
     },
@@ -107,17 +107,19 @@ server.delete('/api/users/:id', (req, res) => {
 
 server.put('/api/users/:id', (req, res) => {
     const id = req.params.id;
-    const {name, bio} = req.body;
+    const user = req.body;
 
     const findId = users.find(user => user.id == id)
     
-    if(findId !== id){
+    if(!findId){
         return res.status(404).json({ message: "The user with the specified ID does not exist." })
-    } else if(!name || !bio){
+    } else if(!user.name || !user.bio){
         return res.status(400).json({ errorMessage: "Please provide name and bio for the user."})
     } else {
         try {
-            res.status(200).json(findId)
+            users = users.filter(user => user.id == id)
+            users.push(user)
+            res.status(200).json(users)
         }
         catch (err) {
             console.log(err)
