@@ -42,21 +42,19 @@ server.get('/users', (req, res) => {
 // POST 
 server.post('/api/users', (req, res) => {
     const user = req.body;
-    
-    then(user => {
-        if(!user.name || !user.id) {
-            res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
-        } else {
+
+    if(!user.name || !user.id) {
+        return res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
+    } else {
+        try {
             users.push(user);
             res.status(201).json(users);
         }
-    });
-    .catch(err => {
-        console.log(err)
-        res.status(500).json({ 
-            errorMessage: "There was an error while saving the user to the database" 
-        })
-    })   
+        catch (err) {
+            console.log(err)
+            res.status(500).json({ errorMessage: "There was an error while saving the user to the database" })
+        }
+    }
 })
 
 // GET
@@ -72,10 +70,16 @@ server.get('/api/users/:id', (req, res) => {
     const id = req.params.id;
     const findId = users.find(user => user.id == id)
 
-    if (!id) {
-        return res.status(404).json({ message: "The user with the specified ID does not exist." })
+    if (!findId) {
+        return res.status(404).json({ errorMessage: "The user with the specified ID does not exist." })
     } else {
-        return res.status(200).json(findId)
+        try {
+            return res.status(200).json(findId)
+        }
+        catch (err) {
+            console.log(err)
+            res.status(500).json({ errorMessage: "The user information could not be retrieved." })
+        }
     }
     
 })
@@ -83,16 +87,18 @@ server.get('/api/users/:id', (req, res) => {
 // DELETE
 server.delete('/api/users/:id', (req, res) => {
     const id = req.params.id;
+    users = users.filter(user => user.id !== Number(id));
 
-    const users = users.filter(user => user.id !== Number(id));
-
-    if (users !== id){
-        return res.status(404).json({ 
-            errorMessage: "The user with the specified ID does not exist." 
-        })
+    if(users !== id){
+        return res.status(404).json({ errorMessage: "The user with the specified ID does not exist." })
     } else {
-        return 
-        res.status(200).json(users);
+        try {
+            res.status(200).send(users)
+        }
+        catch (err) {
+            console.log(err)
+            res.status(500).json({ errorMessage: "The user could not be removed" })
+        }
     }
 })
 
@@ -101,4 +107,21 @@ server.delete('/api/users/:id', (req, res) => {
 
 server.put('/api/users/:id', (req, res) => {
     const id = req.params.id;
+    const {name, bio} = req.body;
+
+    const findId = users.find(user => user.id == id)
+    
+    if(findId !== id){
+        return res.status(404).json({ message: "The user with the specified ID does not exist." })
+    } else if(!name || !bio){
+        return res.status(400).json({ errorMessage: "Please provide name and bio for the user."})
+    } else {
+        try {
+            res.status(200).json(findId)
+        }
+        catch (err) {
+            console.log(err)
+            res.status(500).json({ errorMessage: "The user information could not be modified." })
+        }
+    }
 })

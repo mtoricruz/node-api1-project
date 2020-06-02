@@ -78,7 +78,7 @@ When the client makes a `GET` request to `/api/users/:id`:
   - return the following JSON object: 
   `{ message: "The user with the specified ID does not exist." }`.
 
-- If there's an error in retrieving the _user_ from the database:
+[x] If there's an error in retrieving the _user_ from the database:
   - respond with HTTP status code `500`.
   - return the following JSON object: 
   `{ errorMessage: "The user information could not be retrieved." }`.
@@ -91,32 +91,32 @@ When the client makes a `DELETE` request to `/api/users/:id`:
   - return the following JSON object: 
   `{ message: "The user with the specified ID does not exist." }`.
 
-- If there's an error in removing the _user_ from the database:
+[x] If there's an error in removing the _user_ from the database:
   - respond with HTTP status code `500`.
   - return the following JSON object: 
   `{ errorMessage: "The user could not be removed" }`.
 
 When the client makes a `PUT` request to `/api/users/:id`:
 
-- If the _user_ with the specified `id` is not found:
+[x] If the _user_ with the specified `id` is not found:
 
   - respond with HTTP status code `404` (Not Found).
   - return the following JSON object: 
   `{ message: "The user with the specified ID does not exist." }`.
 
-- If the request body is missing the `name` or `bio` property:
+[x] If the request body is missing the `name` or `bio` property:
 
   - respond with HTTP status code `400` (Bad Request).
   - return the following JSON response: 
   `{ errorMessage: "Please provide name and bio for the user." }`.
 
-- If there's an error when updating the _user_:
+[x] If there's an error when updating the _user_:
 
   - respond with HTTP status code `500`.
   - return the following JSON object: 
   `{ errorMessage: "The user information could not be modified." }`.
 
-- If the user is found and the new information is valid:
+[x] If the user is found and the new information is valid:
 
   - update the user document in the database using the new information sent in the `request body`.
   - respond with HTTP status code `200` (OK).
@@ -136,3 +136,18 @@ Create a new React application and connect it to your server:
 - add a delete button to each displayed user that will remove it from the server.
 - add forms to add and update data.
 - Style the list of users however you see fit.
+
+<!-- then(user => {
+        if(!user.name || !user.id) {
+            res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
+        } else {
+            users.push(user);
+            res.status(201).json(users);
+        }
+    });
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({ 
+            errorMessage: "There was an error while saving the user to the database" 
+        })
+    })    -->
