@@ -113,12 +113,22 @@ server.put('/api/users/:id', (req, res) => {
     
     if(!findId){
         return res.status(404).json({ message: "The user with the specified ID does not exist." })
-    } else if(!user.name || !user.bio){
+    } else if(!findId.name || !findId.bio){
         return res.status(400).json({ errorMessage: "Please provide name and bio for the user."})
     } else {
         try {
-            users = users.filter(user => user.id == id)
-            users.push(user)
+            const updated = users.map(item => {
+                if (item.id == id) {
+                    return {
+                        ...item,
+                        name: user.name,
+                        bio: user.bio
+                    }
+                } else {
+                    return item
+                }
+            })
+            users = updated
             res.status(200).json(users)
         }
         catch (err) {
